@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Booth Builder – Camera Mode</title>
+  <link rel="stylesheet" href="/src/styles/main.css" />
+</head>
+<body>
+  <div class="app">
+    <div class="left">
+      <div class="card">
+        <div class="title">
+          <span>Booth Builder</span>
+          <label class="tog"><input id="themeToggle" type="checkbox"/> Dark</label>
+        </div>
+        <div class="mini" style="margin:-4px 0 8px 0">Arrows=move • Shift=x4 • [ ]=rotate • Ctrl+D=dup • Shift+Del=delete • W=move gizmo • R=rotate gizmo</div>
+        <div class="grid2 row">
+          <button id="addWall">Add Wall</button>
+          <button id="addKiosk">Add Kiosk</button>
+        </div>
+        <div class="grid2 row">
+          <button id="exportBtn">Export JSON</button>
+          <label class="btn">Import<input id="importFile" type="file" accept="application/json" style="display:none"/></label>
+        </div>
+        <div class="grid2 row">
+          <button id="exportPNGBtn">Export PNG</button>
+          <button id="resetViewBtn">Reset View</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="title">📷 Scene Camera</div>
+        <div class="grid2 row">
+          <button id="addCamera">Add/Reset Camera</button>
+          <button id="viewCamera" disabled>View Through</button>
+        </div>
+        <div id="camControls" style="display:none">
+          <div class="row">
+            <label class="mini" style="display:inline-flex;align-items:center;gap:6px">
+              <input id="showCamHelper" type="checkbox" checked/> Show in scene
+            </label>
+          </div>
+          <div class="row">
+            <div class="label">Position (X, Y, Z)</div>
+            <div class="grid3">
+              <input id="camPx" class="num" type="number" step="0.1" value="0"/>
+              <input id="camPy" class="num" type="number" step="0.1" value="1.6"/>
+              <input id="camPz" class="num" type="number" step="0.1" value="5"/>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">Rotation (Pitch, Yaw, Roll)</div>
+            <div class="grid3">
+              <input id="camRx" class="num" type="number" step="1" value="0"/>
+              <input id="camRy" class="num" type="number" step="1" value="0"/>
+              <input id="camRz" class="num" type="number" step="1" value="0"/>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">FOV: <span id="fovVal">60</span>°</div>
+            <input id="camFov" type="range" min="20" max="120" value="60"/>
+          </div>
+          <div class="mini" style="margin-bottom:8px">
+            <strong>Edit Mode:</strong> Drag camera to move XZ • Shift+drag = Y • Right-drag = rotate • W = move gizmo • R = rotate gizmo
+          </div>
+          <button id="deleteCamera" style="width:100%; border-color:#ef4444; background:var(--danger); color:var(--dangerText)">Delete Camera</button>
+        </div>
+        <div class="mini" style="margin-top:8px"><strong>View Mode:</strong> Left-drag = look/rotate | Middle-drag = pan | Right-drag = dolly | Scroll = dolly | WASD = move | QE = up/down | ESC = exit</div>
+      </div>
+
+      <div class="card">
+        <div class="title">Scene Objects</div>
+        <div id="emptyMsg" class="label">No objects yet.</div>
+        <div id="list" class="list"></div>
+        <div class="mini" style="margin-top:6px">Double-click name to rename</div>
+      </div>
+
+      <div class="card" id="inspector">
+        <div class="label">Select an object from the list.</div>
+      </div>
+
+      <div class="card">
+        <div class="title">Floor &amp; Lighting</div>
+        <div class="row">
+          <div class="label">Floor Size (W × D)</div>
+          <div class="grid2">
+            <input id="floorW" class="num" type="number" step="0.5" value="12"/>
+            <input id="floorD" class="num" type="number" step="0.5" value="8"/>
+          </div>
+        </div>
+        <div class="row">
+          <div class="label">Snap</div>
+          <div class="grid2" style="align-items:center">
+            <label class="mini" style="display:inline-flex;align-items:center;gap:6px"><input id="snapOn" type="checkbox" checked/> Enable</label>
+            <input id="snapStep" type="number" step="0.05" value="0.25" class="num"/>
+          </div>
+        </div>
+        <div class="row">
+          <div class="label">Floor Texture</div>
+          <div class="grid2">
+            <label class="btn btn-outline">Upload<input id="floorTexFile" type="file" accept="image/*" style="display:none"/></label>
+            <button id="floorClear">Clear</button>
+          </div>
+          <div class="mini" style="margin-top:6px">File: <span id="floorTexName">(none)</span></div>
+          <label class="mini" style="display:inline-flex;align-items:center;gap:6px;margin-top:8px"><input id="floorTile" type="checkbox"/> Tile 1m</label>
+        </div>
+        <div class="row">
+          <div class="label">Ambient Light</div>
+          <input id="ambInt" type="range" min="0" max="2" step="0.05" value="0.9"/>
+        </div>
+        <div class="row">
+          <div class="label">Exposure</div>
+          <input id="exposure" type="range" min="0.5" max="2.0" step="0.05" value="1.1"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="sceneWrap">
+        <canvas id="scene"></canvas>
+        <div class="hint" id="hintText">Left-drag=orbit • Right-drag=pan • Wheel=zoom • Click=select</div>
+        <div class="camera-view-overlay" id="cameraViewOverlay">📷 Camera View - Press ESC to return</div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
